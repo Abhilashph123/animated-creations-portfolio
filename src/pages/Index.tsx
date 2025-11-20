@@ -1,20 +1,23 @@
-import { Navigation } from "@/components/Navigation";
-import { Hero } from "@/components/Hero";
+import { SmoothScroll } from "@/components/SmoothScroll";
+import { Navigation3D } from "@/components/Navigation3D";
+import { Hero3D } from "@/components/Hero3D";
 import { About } from "@/components/About";
-import { Skills } from "@/components/Skills";
-import { Projects } from "@/components/Projects";
-import { Contact } from "@/components/Contact";
+import { Skills3D } from "@/components/Skills3D";
+import { Projects3D } from "@/components/Projects3D";
+import { Contact3D } from "@/components/Contact3D";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Contact />
-    </div>
+    <SmoothScroll>
+      <div className="min-h-screen bg-background">
+        <Navigation3D />
+        <Hero3D />
+        <About />
+        <Skills3D />
+        <Projects3D />
+        <Contact3D />
+      </div>
+    </SmoothScroll>
   );
 };
 
