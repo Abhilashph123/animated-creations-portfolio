@@ -53,7 +53,7 @@ export const Navigation3D = () => {
           href="#home"
           className="text-2xl font-bold text-gradient neon-text hover:scale-110 transition-transform"
         >
-          &lt;Dev/&gt;
+          Abhilash PH
         </a>
 
         {/* Desktop Navigation */}
@@ -71,9 +71,12 @@ export const Navigation3D = () => {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300 neon-glow" />
             </a>
           ))}
-          <button className="px-6 py-2 glass-card rounded-full text-primary font-semibold hover:scale-110 transition-all neon-border">
+          <a
+            href="mailto:abhilashph85@gmail.com"
+            className="px-6 py-2 bg-primary text-primary-foreground font-semibold rounded-full hover:scale-110 transition-all"
+          >
             Hire Me
-          </button>
+          </a>
         </div>
 
         {/* Mobile Menu Button */}
@@ -98,9 +101,12 @@ export const Navigation3D = () => {
               {item.name}
             </a>
           ))}
-          <button className="w-full px-6 py-3 glass-card rounded-full text-primary font-semibold hover:scale-105 transition-all neon-border">
+          <a
+            href="mailto:abhilashph85@gmail.com"
+            className="block w-full px-6 py-3 bg-primary text-primary-foreground text-center font-semibold rounded-full hover:scale-105 transition-all"
+          >
             Hire Me
-          </button>
+          </a>
         </div>
       )}
 

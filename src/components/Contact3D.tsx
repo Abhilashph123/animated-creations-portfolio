@@ -3,7 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Sphere } from "@react-three/drei";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Mail, Github, Linkedin, Twitter } from "lucide-react";
+import { Mail, Github, Linkedin, Phone, MapPin } from "lucide-react";
 import * as THREE from "three";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -27,11 +27,15 @@ const FloatingSphere = ({ position, color }: { position: [number, number, number
   );
 };
 
+const contactInfo = [
+  { icon: Mail, label: "Email", value: "abhilashph85@gmail.com", href: "mailto:abhilashph85@gmail.com", color: "#3ECFEF" },
+  { icon: Phone, label: "Phone", value: "+91 8590192435", href: "tel:+918590192435", color: "#A855F7" },
+  { icon: MapPin, label: "Location", value: "Thrissur, Kerala", href: "#", color: "#F43F5E" },
+];
+
 const socials = [
-  { icon: Mail, label: "Email", href: "mailto:hello@example.com", color: "#3ECFEF" },
   { icon: Github, label: "GitHub", href: "https://github.com", color: "#FFFFFF" },
   { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com", color: "#0077B5" },
-  { icon: Twitter, label: "Twitter", href: "https://twitter.com", color: "#1DA1F2" },
 ];
 
 export const Contact3D = () => {
@@ -98,24 +102,52 @@ export const Contact3D = () => {
       <div className="relative z-10 max-w-5xl mx-auto w-full text-center">
         <h2
           ref={titleRef}
-          className="text-7xl md:text-8xl font-bold mb-8 text-gradient neon-text"
+          className="text-6xl md:text-8xl font-bold mb-8 text-gradient neon-text"
         >
           Let's Connect
         </h2>
 
         <div ref={contentRef} className="space-y-12">
-          <p className="text-2xl md:text-3xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Ready to bring your next project to life with cutting-edge technology?
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Ready to bring your web project to life? Let's build something amazing together!
           </p>
 
-          <button className="px-12 py-6 glass-card text-primary font-bold rounded-full hover:scale-110 transition-all neon-border text-xl group">
-            <span className="flex items-center gap-3">
-              <Mail className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-              Get In Touch
-            </span>
-          </button>
+          {/* Contact Info Cards */}
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {contactInfo.map((info) => {
+              const Icon = info.icon;
+              return (
+                <a
+                  key={info.label}
+                  href={info.href}
+                  className="glass-card p-6 rounded-2xl hover:scale-105 transition-all group"
+                >
+                  <div
+                    className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4 neon-border"
+                    style={{ backgroundColor: `${info.color}20` }}
+                  >
+                    <Icon className="w-7 h-7 text-primary" />
+                  </div>
+                  <h3 className="font-bold mb-2">{info.label}</h3>
+                  <p className="text-muted-foreground text-sm group-hover:text-primary transition-colors">
+                    {info.value}
+                  </p>
+                </a>
+              );
+            })}
+          </div>
 
-          <div className="flex justify-center gap-8 pt-8">
+          <a
+            href="mailto:abhilashph85@gmail.com"
+            className="inline-flex px-12 py-6 bg-primary text-primary-foreground font-bold rounded-full hover:scale-110 transition-all text-xl"
+          >
+            <span className="flex items-center gap-3">
+              <Mail className="w-6 h-6" />
+              Hire Me Now
+            </span>
+          </a>
+
+          <div className="flex justify-center gap-6 pt-8">
             {socials.map((social, index) => {
               const Icon = social.icon;
               return (
@@ -139,7 +171,7 @@ export const Contact3D = () => {
           </div>
 
           <p className="text-sm text-muted-foreground pt-12">
-            © 2025 Portfolio. Crafted with React, Three.js & GSAP
+            © 2025 Abhilash PH. Full Stack Developer | WordPress Expert
           </p>
         </div>
       </div>
