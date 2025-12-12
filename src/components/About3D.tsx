@@ -1,31 +1,9 @@
 import { useEffect, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, RoundedBox, Torus } from "@react-three/drei";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Briefcase, GraduationCap, Code, Calendar } from "lucide-react";
-import * as THREE from "three";
+import { Briefcase, GraduationCap, Code, Calendar, ArrowRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const FloatingShape = ({ position, color }: { position: [number, number, number]; color: string }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.elapsedTime * 0.3;
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.2;
-    }
-  });
-
-  return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <RoundedBox ref={meshRef} args={[0.8, 0.8, 0.8]} position={position} radius={0.1}>
-        <meshStandardMaterial color={color} metalness={0.8} roughness={0.2} />
-      </RoundedBox>
-    </Float>
-  );
-};
 
 const experience = [
   {
@@ -35,25 +13,16 @@ const experience = [
     period: "July 2025 - Present",
     description: "Building interactive UIs with React/Next.js, Node.js APIs, WordPress customization, and MongoDB optimization.",
     icon: Briefcase,
-    color: "#3ECFEF",
+    color: "from-violet-500 to-purple-500",
   },
   {
-    title: "Full Stack Developer (WordPress)",
-    company: "Midnay Cyberpark Kozhikode",
-    location: "Training Program",
+    title: "Full Stack Developer Training",
+    company: "Midnay Cyberpark",
+    location: "Kozhikode",
     period: "Dec 2023 - June 2025",
     description: "Specialized training in WordPress development, custom plugins, themes, and modern JavaScript frameworks.",
     icon: Code,
-    color: "#A855F7",
-  },
-  {
-    title: "Full Stack Developer Intern",
-    company: "Freelance Projects",
-    location: "Remote",
-    period: "Jan 2023 - May 2023",
-    description: "Gained hands-on experience building real-world web applications and WordPress solutions.",
-    icon: GraduationCap,
-    color: "#F43F5E",
+    color: "from-blue-500 to-cyan-500",
   },
   {
     title: "Freelance Developer",
@@ -62,56 +31,73 @@ const experience = [
     period: "2018 - 2022",
     description: "4+ years delivering custom WordPress solutions, theme development, and web applications for clients worldwide.",
     icon: Briefcase,
-    color: "#47A248",
+    color: "from-pink-500 to-rose-500",
   },
 ];
 
 const education = [
-  {
-    degree: "BCA",
-    institution: "Manipal University",
-    year: "2025",
-  },
-  {
-    degree: "Higher Secondary",
-    institution: "Avanoor Higher Secondary School",
-    year: "Completed",
-  },
+  { degree: "BCA", institution: "Manipal University", year: "2025" },
+  { degree: "Higher Secondary", institution: "Avanoor Higher Secondary School", year: "Completed" },
 ];
 
 export const About3D = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(titleRef.current, {
+      // Title animation
+      gsap.from(".about-title", {
         scrollTrigger: {
-          trigger: titleRef.current,
-          start: "top 80%",
-          end: "top 50%",
-          scrub: 1,
+          trigger: ".about-title",
+          start: "top 85%",
+          end: "top 60%",
+          toggleActions: "play none none reverse",
         },
-        y: 100,
+        y: 80,
         opacity: 0,
-        scale: 0.8,
+        duration: 1,
+        ease: "power4.out",
       });
 
-      cardsRef.current.forEach((card, index) => {
-        if (card) {
-          gsap.from(card, {
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-              end: "top 60%",
-              scrub: 1,
-            },
-            x: index % 2 === 0 ? -100 : 100,
-            opacity: 0,
-            scale: 0.9,
-          });
-        }
+      // Summary card
+      gsap.from(".about-summary", {
+        scrollTrigger: {
+          trigger: ".about-summary",
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+      });
+
+      // Experience cards with stagger
+      gsap.from(".exp-card", {
+        scrollTrigger: {
+          trigger: ".exp-cards",
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+        y: 80,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+      });
+
+      // Education cards
+      gsap.from(".edu-card", {
+        scrollTrigger: {
+          trigger: ".edu-cards",
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+        scale: 0.9,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "back.out(1.7)",
       });
     }, sectionRef);
 
@@ -122,78 +108,61 @@ export const About3D = () => {
     <section
       id="about"
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center px-4 py-32 overflow-hidden"
+      className="relative min-h-screen py-32 px-6 overflow-hidden"
     >
-      {/* 3D Background */}
-      <div className="absolute inset-0 opacity-30">
-        <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={1} color="#3ECFEF" />
-          <pointLight position={[-10, -10, -10]} intensity={0.8} color="#A855F7" />
-          
-          <FloatingShape position={[-5, 3, -2]} color="#3ECFEF" />
-          <FloatingShape position={[5, 3, -3]} color="#A855F7" />
-          <FloatingShape position={[-4, -3, -4]} color="#F43F5E" />
-          <FloatingShape position={[4, -3, -2]} color="#47A248" />
-        </Canvas>
-      </div>
-
-      {/* Animated background */}
+      {/* Background */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-neon-purple blur-[150px] rounded-full opacity-15 animate-pulse" />
-        <div className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-neon-cyan blur-[150px] rounded-full opacity-15 animate-pulse delay-1000" />
+        <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-gradient-purple/10 blur-[150px] rounded-full" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-gradient-blue/10 blur-[150px] rounded-full" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full">
-        <h2
-          ref={titleRef}
-          className="text-6xl md:text-7xl font-bold text-center mb-8 text-gradient neon-text"
-        >
-          About Me
+      <div className="relative z-10 max-w-6xl mx-auto">
+        <h2 className="about-title font-display text-5xl md:text-7xl font-bold text-center mb-6">
+          <span className="text-gradient">About Me</span>
         </h2>
 
         {/* Summary */}
-        <div className="glass-card p-8 rounded-3xl mb-16 max-w-4xl mx-auto">
+        <div className="about-summary glass-card rounded-3xl p-8 md:p-12 mb-20 max-w-4xl mx-auto">
           <p className="text-lg md:text-xl text-muted-foreground leading-relaxed text-center">
-            Highly skilled <span className="text-primary font-semibold">WordPress Developer</span> and{" "}
-            <span className="text-primary font-semibold">Full-Stack Engineer</span> with{" "}
-            <span className="text-primary font-semibold">5+ years</span> of experience. Specialized in building
-            custom WordPress solutions, React applications, and modern web experiences. Proficient in{" "}
-            <span className="text-primary">Next.js, Node.js, MongoDB</span>, and advanced MySQL optimization.
+            Highly skilled <span className="text-primary font-medium">WordPress Developer</span> and{" "}
+            <span className="text-primary font-medium">Full-Stack Engineer</span> with{" "}
+            <span className="text-foreground font-medium">5+ years</span> of experience. Specialized in building
+            custom WordPress solutions, React applications, and modern web experiences with{" "}
+            <span className="text-foreground">Next.js, Node.js, and MongoDB</span>.
           </p>
         </div>
 
-        {/* Experience Timeline */}
-        <h3 className="text-3xl font-bold text-center mb-12">Professional Journey</h3>
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
+        {/* Experience */}
+        <h3 className="font-display text-3xl font-bold text-center mb-12">
+          Professional Journey
+        </h3>
+
+        <div className="exp-cards space-y-6 mb-20">
           {experience.map((exp, index) => {
             const Icon = exp.icon;
             return (
               <div
-                key={exp.title + exp.company}
-                ref={(el) => (cardsRef.current[index] = el)}
-                className="glass-card p-6 rounded-2xl hover:scale-105 transition-all duration-500 group"
+                key={index}
+                className="exp-card group glass-card-hover rounded-2xl p-6 md:p-8"
               >
-                <div className="flex items-start gap-4">
-                  <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 neon-border"
-                    style={{ backgroundColor: `${exp.color}20` }}
-                  >
-                    <Icon className="w-7 h-7 text-primary" />
+                <div className="flex flex-col md:flex-row md:items-center gap-6">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${exp.color} flex items-center justify-center flex-shrink-0`}>
+                    <Icon className="w-8 h-8 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-xl font-bold mb-1 group-hover:text-primary transition-colors">
-                      {exp.title}
-                    </h4>
-                    <p className="text-primary font-medium mb-1">{exp.company}</p>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                      <Calendar className="w-4 h-4" />
-                      <span>{exp.period}</span>
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
+                      <h4 className="text-xl font-bold group-hover:text-primary transition-colors">
+                        {exp.title}
+                      </h4>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Calendar className="w-4 h-4" />
+                        {exp.period}
+                      </div>
                     </div>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {exp.description}
-                    </p>
+                    <p className="text-primary font-medium mb-2">{exp.company} • {exp.location}</p>
+                    <p className="text-muted-foreground">{exp.description}</p>
                   </div>
+                  <ArrowRight className="w-6 h-6 text-muted-foreground group-hover:text-primary group-hover:translate-x-2 transition-all hidden md:block" />
                 </div>
               </div>
             );
@@ -201,25 +170,22 @@ export const About3D = () => {
         </div>
 
         {/* Education */}
-        <h3 className="text-3xl font-bold text-center mb-8">Education</h3>
-        <div className="flex flex-wrap justify-center gap-6">
-          {education.map((edu) => (
+        <h3 className="font-display text-3xl font-bold text-center mb-12">Education</h3>
+        <div className="edu-cards flex flex-wrap justify-center gap-6">
+          {education.map((edu, index) => (
             <div
-              key={edu.degree}
-              className="glass-card px-8 py-6 rounded-2xl hover:scale-105 transition-all text-center"
+              key={index}
+              className="edu-card glass-card-hover rounded-2xl p-6 text-center min-w-[250px]"
             >
-              <GraduationCap className="w-10 h-10 text-primary mx-auto mb-3" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center mx-auto mb-4">
+                <GraduationCap className="w-7 h-7 text-white" />
+              </div>
               <h4 className="text-xl font-bold mb-1">{edu.degree}</h4>
-              <p className="text-muted-foreground">{edu.institution}</p>
-              <span className="text-sm text-primary">{edu.year}</span>
+              <p className="text-muted-foreground text-sm mb-2">{edu.institution}</p>
+              <span className="text-primary text-sm font-medium">{edu.year}</span>
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Grid overlay */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="h-full w-full bg-[linear-gradient(to_right,#3ECFEF_1px,transparent_1px),linear-gradient(to_bottom,#3ECFEF_1px,transparent_1px)] bg-[size:6rem_6rem]" />
       </div>
     </section>
   );
