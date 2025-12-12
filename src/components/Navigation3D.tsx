@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Menu, X } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const navItems = [
   { name: "Home", href: "#home" },
@@ -17,10 +14,21 @@ export const Navigation3D = () => {
   const navRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+
+      // Update active section
+      const sections = navItems.map((item) => item.href.slice(1));
+      for (const section of sections.reverse()) {
+        const el = document.getElementById(section);
+        if (el && el.getBoundingClientRect().top < 200) {
+          setActiveSection(section);
+          break;
+        }
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -28,100 +36,96 @@ export const Navigation3D = () => {
   }, []);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(navRef.current, {
-        y: -100,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-        delay: 0.5,
-      });
-    }, navRef);
-
-    return () => ctx.revert();
+    gsap.from(navRef.current, {
+      y: -100,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+      delay: 0.8,
+    });
   }, []);
 
   return (
     <nav
       ref={navRef}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "glass-card py-4" : "bg-transparent py-6"
+        scrolled ? "py-4" : "py-6"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-        <a
-          href="#home"
-          className="text-2xl font-bold text-gradient neon-text hover:scale-110 transition-transform"
-        >
-          Abhilash PH
-        </a>
-
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
-          {navItems.map((item, index) => (
-            <a
-              key={item.name}
-              href={item.href}
-              className="text-foreground hover:text-primary transition-colors relative group"
-              style={{
-                animation: `fadeIn 0.5s ease-out ${index * 0.1}s both`,
-              }}
-            >
-              {item.name}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300 neon-glow" />
-            </a>
-          ))}
+      <div className="max-w-7xl mx-auto px-6">
+        <div className={`flex items-center justify-between transition-all duration-500 ${
+          scrolled ? "glass rounded-2xl px-6 py-3" : ""
+        }`}>
           <a
-            href="mailto:abhilashph85@gmail.com"
-            className="px-6 py-2 bg-primary text-primary-foreground font-semibold rounded-full hover:scale-110 transition-all"
+            href="#home"
+            className="font-display text-xl font-bold text-gradient-static hover:scale-105 transition-transform"
           >
-            Hire Me
+            Abhilash.dev
           </a>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-1">
+            {navItems.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-xl ${
+                  activeSection === item.href.slice(1)
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {item.name}
+                {activeSection === item.href.slice(1) && (
+                  <span className="absolute inset-0 bg-primary/10 rounded-xl -z-10" />
+                )}
+              </a>
+            ))}
+            <a
+              href="mailto:abhilashph85@gmail.com"
+              className="ml-4 px-6 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-xl hover:scale-105 transition-all duration-300 hover:shadow-[0_0_20px_-5px] hover:shadow-primary"
+            >
+              Hire Me
+            </a>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 glass rounded-xl"
+          >
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 glass-card rounded-lg neon-border"
-        >
-          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden absolute top-full left-0 right-0 px-6 py-4">
+            <div className="glass rounded-2xl p-6 space-y-2">
+              {navItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-4 py-3 text-lg font-medium rounded-xl transition-all ${
+                    activeSection === item.href.slice(1)
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  {item.name}
+                </a>
+              ))}
+              <a
+                href="mailto:abhilashph85@gmail.com"
+                className="block w-full mt-4 px-6 py-3 bg-primary text-primary-foreground text-center font-medium rounded-xl"
+              >
+                Hire Me
+              </a>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 glass-card mt-2 mx-4 rounded-2xl p-6 space-y-4">
-          {navItems.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              onClick={() => setIsOpen(false)}
-              className="block text-lg text-foreground hover:text-primary transition-colors py-2"
-            >
-              {item.name}
-            </a>
-          ))}
-          <a
-            href="mailto:abhilashph85@gmail.com"
-            className="block w-full px-6 py-3 bg-primary text-primary-foreground text-center font-semibold rounded-full hover:scale-105 transition-all"
-          >
-            Hire Me
-          </a>
-        </div>
-      )}
-
-      <style>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </nav>
   );
 };

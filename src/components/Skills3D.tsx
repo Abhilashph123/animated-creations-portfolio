@@ -7,20 +7,20 @@ import * as THREE from "three";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const IconBox = ({ position, color, delay }: { position: [number, number, number]; color: string; delay: number }) => {
+const FloatingIcon = ({ position, color, delay }: { position: [number, number, number]; color: string; delay: number }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime + delay) * 0.3;
-      meshRef.current.rotation.y = Math.cos(state.clock.elapsedTime + delay) * 0.3;
+      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5 + delay) * 0.2;
+      meshRef.current.rotation.y = Math.cos(state.clock.elapsedTime * 0.5 + delay) * 0.2;
     }
   });
 
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <RoundedBox ref={meshRef} args={[1, 1, 1]} position={position} radius={0.1}>
-        <meshStandardMaterial color={color} metalness={0.8} roughness={0.2} />
+    <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1.5}>
+      <RoundedBox ref={meshRef} args={[0.8, 0.8, 0.8]} position={position} radius={0.15}>
+        <meshStandardMaterial color={color} metalness={0.9} roughness={0.1} />
       </RoundedBox>
     </Float>
   );
@@ -29,159 +29,146 @@ const IconBox = ({ position, color, delay }: { position: [number, number, number
 const skillCategories = [
   {
     title: "Frontend",
+    gradient: "from-blue-500 to-cyan-400",
     skills: [
-      { name: "React", level: 95, color: "#61DAFB" },
-      { name: "Next.js", level: 90, color: "#FFFFFF" },
-      { name: "JavaScript", level: 95, color: "#F7DF1E" },
-      { name: "HTML/CSS", level: 98, color: "#E34F26" },
-      { name: "jQuery", level: 85, color: "#0769AD" },
+      { name: "React", level: 95 },
+      { name: "Next.js", level: 90 },
+      { name: "JavaScript", level: 95 },
+      { name: "TypeScript", level: 85 },
+      { name: "HTML/CSS", level: 98 },
     ],
   },
   {
     title: "Backend",
+    gradient: "from-violet-500 to-purple-500",
     skills: [
-      { name: "Node.js", level: 88, color: "#339933" },
-      { name: "PHP", level: 92, color: "#777BB4" },
-      { name: "MongoDB", level: 85, color: "#47A248" },
-      { name: "MySQL", level: 90, color: "#4479A1" },
+      { name: "Node.js", level: 88 },
+      { name: "PHP", level: 92 },
+      { name: "MongoDB", level: 85 },
+      { name: "MySQL", level: 90 },
     ],
   },
   {
     title: "WordPress",
+    gradient: "from-pink-500 to-rose-500",
     skills: [
-      { name: "Plugin Dev", level: 95, color: "#21759B" },
-      { name: "Theme Dev", level: 92, color: "#21759B" },
-      { name: "Custom Blocks", level: 90, color: "#21759B" },
-      { name: "API Integration", level: 88, color: "#21759B" },
+      { name: "Plugin Dev", level: 95 },
+      { name: "Theme Dev", level: 92 },
+      { name: "Gutenberg", level: 90 },
+      { name: "REST API", level: 88 },
     ],
   },
   {
-    title: "Tools & DevOps",
+    title: "DevOps",
+    gradient: "from-orange-500 to-amber-500",
     skills: [
-      { name: "Git", level: 90, color: "#F05032" },
-      { name: "Docker", level: 80, color: "#2496ED" },
+      { name: "Git", level: 90 },
+      { name: "Docker", level: 80 },
     ],
   },
 ];
 
 export const Skills3D = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(titleRef.current, {
+      gsap.from(".skills-title", {
         scrollTrigger: {
-          trigger: titleRef.current,
+          trigger: ".skills-title",
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+        y: 80,
+        opacity: 0,
+        duration: 1,
+        ease: "power4.out",
+      });
+
+      gsap.from(".skill-card", {
+        scrollTrigger: {
+          trigger: ".skill-cards",
           start: "top 80%",
-          end: "top 50%",
-          scrub: 1,
+          toggleActions: "play none none reverse",
         },
         y: 100,
         opacity: 0,
-        scale: 0.8,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power3.out",
       });
 
-      cardsRef.current.forEach((card) => {
-        if (card) {
-          gsap.from(card, {
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-              end: "top 60%",
-              scrub: 1,
-            },
-            y: 100,
-            opacity: 0,
-            rotateY: -20,
-            scale: 0.8,
-          });
-        }
-      });
-
-      gsap.to(sectionRef.current, {
+      gsap.from(".lang-badge", {
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1,
+          trigger: ".lang-section",
+          start: "top 85%",
+          toggleActions: "play none none reverse",
         },
-        backgroundPosition: "50% 100%",
+        scale: 0,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: "back.out(1.7)",
       });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  const allSkillsFlat = skillCategories.flatMap((cat) => cat.skills);
-
   return (
     <section
       id="skills"
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center px-4 py-32 overflow-hidden"
-      style={{
-        backgroundImage: "radial-gradient(circle at 50% 50%, rgba(62, 207, 239, 0.1) 0%, transparent 50%)",
-        backgroundSize: "100% 100%",
-        backgroundPosition: "50% 0%",
-      }}
+      className="relative min-h-screen py-32 px-6 overflow-hidden"
     >
+      {/* Background */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-blue/10 blur-[150px] rounded-full" />
+        <div className="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-gradient-purple/10 blur-[150px] rounded-full" />
+      </div>
+
       {/* 3D Background */}
-      <div className="absolute inset-0 opacity-30">
-        <Canvas camera={{ position: [0, 0, 12], fov: 50 }}>
+      <div className="absolute inset-0 opacity-40 pointer-events-none">
+        <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
           <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={1} color="#3ECFEF" />
-          <pointLight position={[-10, -10, -10]} intensity={0.8} color="#A855F7" />
+          <pointLight position={[10, 10, 10]} intensity={1} color="#b482ff" />
+          <pointLight position={[-10, -10, -10]} intensity={0.8} color="#6b8aff" />
           
-          <IconBox position={[-4, 3, -2]} color="#61DAFB" delay={0} />
-          <IconBox position={[4, 3, -3]} color="#339933" delay={1} />
-          <IconBox position={[-5, -2, -4]} color="#777BB4" delay={2} />
-          <IconBox position={[5, -2, -2]} color="#21759B" delay={3} />
-          <IconBox position={[0, 4, -5]} color="#F05032" delay={4} />
-          <IconBox position={[0, -4, -3]} color="#47A248" delay={5} />
+          <FloatingIcon position={[-5, 3, -3]} color="#b482ff" delay={0} />
+          <FloatingIcon position={[5, 2, -4]} color="#6b8aff" delay={1} />
+          <FloatingIcon position={[-4, -3, -5]} color="#ff6b9d" delay={2} />
+          <FloatingIcon position={[4, -2, -3]} color="#ffa94d" delay={3} />
         </Canvas>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full">
-        <h2
-          ref={titleRef}
-          className="text-6xl md:text-7xl font-bold text-center mb-8 text-gradient neon-text"
-        >
-          Tech Arsenal
+      <div className="relative z-10 max-w-6xl mx-auto">
+        <h2 className="skills-title font-display text-5xl md:text-7xl font-bold text-center mb-6">
+          <span className="text-gradient">Tech Arsenal</span>
         </h2>
-        <p className="text-xl text-muted-foreground text-center mb-16 max-w-3xl mx-auto">
-          5+ years of experience building scalable web solutions with modern technologies
+        <p className="text-center text-muted-foreground text-lg mb-16 max-w-2xl mx-auto">
+          5+ years building scalable solutions with modern technologies
         </p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="skill-cards grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {skillCategories.map((category, catIndex) => (
             <div
               key={category.title}
-              ref={(el) => (cardsRef.current[catIndex] = el)}
-              className="glass-card p-6 rounded-2xl hover:scale-105 transition-all duration-500 group"
-              style={{
-                transformStyle: "preserve-3d",
-                transform: "perspective(1000px)",
-              }}
+              className="skill-card glass-card-hover rounded-2xl p-6"
             >
-              <h3 className="text-2xl font-bold mb-6 text-primary">
-                {category.title}
-              </h3>
+              <div className={`inline-block px-4 py-2 rounded-xl bg-gradient-to-r ${category.gradient} mb-6`}>
+                <h3 className="text-sm font-bold text-white">{category.title}</h3>
+              </div>
               <div className="space-y-4">
                 {category.skills.map((skill) => (
                   <div key={skill.name}>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium">{skill.name}</span>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-medium">{skill.name}</span>
                       <span className="text-sm text-primary">{skill.level}%</span>
                     </div>
-                    <div className="h-2 bg-secondary/50 rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
                       <div
-                        className="h-full rounded-full transition-all duration-1000 ease-out"
-                        style={{
-                          width: `${skill.level}%`,
-                          background: `linear-gradient(90deg, ${skill.color}, #3ECFEF)`,
-                        }}
+                        className={`h-full rounded-full bg-gradient-to-r ${category.gradient}`}
+                        style={{ width: `${skill.level}%` }}
                       />
                     </div>
                   </div>
@@ -192,24 +179,19 @@ export const Skills3D = () => {
         </div>
 
         {/* Languages */}
-        <div className="mt-16 text-center">
-          <h3 className="text-2xl font-bold mb-6">Languages</h3>
-          <div className="flex justify-center gap-6 flex-wrap">
+        <div className="lang-section text-center">
+          <h3 className="font-display text-2xl font-bold mb-8">Languages</h3>
+          <div className="flex justify-center flex-wrap gap-4">
             {["English", "Hindi", "Malayalam"].map((lang) => (
               <span
                 key={lang}
-                className="px-6 py-3 glass-card rounded-full text-primary font-medium hover:scale-110 transition-all neon-border"
+                className="lang-badge px-6 py-3 glass-card-hover rounded-2xl font-medium cursor-default"
               >
                 {lang}
               </span>
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Grid overlay */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="h-full w-full bg-[linear-gradient(to_right,#3ECFEF_1px,transparent_1px),linear-gradient(to_bottom,#3ECFEF_1px,transparent_1px)] bg-[size:6rem_6rem]" />
       </div>
     </section>
   );
