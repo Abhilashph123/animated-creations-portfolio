@@ -29,25 +29,46 @@ const ProjectCube = ({ color }: { color: string }) => {
 
 const projects = [
   {
-    title: "Neural Canvas",
-    description: "AI-powered 3D art generation platform with real-time rendering",
-    tech: ["React", "Three.js", "TensorFlow"],
-    color: "#3ECFEF",
+    title: "Custom WordPress Plugin Suite",
+    description: "Enterprise-grade WordPress plugins with custom blocks, REST API integrations, and advanced MySQL queries for high-traffic websites.",
+    tech: ["WordPress", "PHP", "MySQL", "REST API"],
+    color: "#21759B",
     gradient: "from-neon-cyan to-neon-purple",
   },
   {
-    title: "Quantum Dashboard",
-    description: "Next-gen analytics platform with immersive data visualization",
-    tech: ["Next.js", "GSAP", "D3.js"],
-    color: "#A855F7",
+    title: "Next.js E-Commerce Platform",
+    description: "Full-stack e-commerce solution with React, Next.js, MongoDB backend, and seamless payment gateway integration.",
+    tech: ["Next.js", "React", "MongoDB", "Node.js"],
+    color: "#FFFFFF",
     gradient: "from-neon-purple to-neon-pink",
   },
   {
-    title: "MetaSpace",
-    description: "Virtual collaboration hub with WebRTC and spatial audio",
-    tech: ["WebRTC", "Socket.io", "React"],
-    color: "#3ECFEF",
+    title: "Real-time Dashboard App",
+    description: "Interactive analytics dashboard with real-time data visualization, built with React and modern JavaScript frameworks.",
+    tech: ["React", "Node.js", "WebSocket", "Docker"],
+    color: "#61DAFB",
     gradient: "from-neon-cyan to-primary",
+  },
+  {
+    title: "WordPress Theme Framework",
+    description: "Scalable WordPress theme framework with Gutenberg block support, performance optimization, and security best practices.",
+    tech: ["WordPress", "PHP", "JavaScript", "CSS"],
+    color: "#21759B",
+    gradient: "from-primary to-neon-cyan",
+  },
+  {
+    title: "API Integration Platform",
+    description: "Robust third-party API integration system for WordPress sites, featuring advanced debugging and error handling.",
+    tech: ["PHP", "REST API", "WordPress", "MySQL"],
+    color: "#777BB4",
+    gradient: "from-neon-purple to-neon-cyan",
+  },
+  {
+    title: "MongoDB Web Application",
+    description: "Modern full-stack application with Node.js backend, MongoDB database, and React frontend for seamless user experience.",
+    tech: ["MongoDB", "Node.js", "React", "Express"],
+    color: "#47A248",
+    gradient: "from-neon-cyan to-neon-purple",
   },
 ];
 
@@ -58,7 +79,6 @@ export const Projects3D = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title animation
       gsap.from(titleRef.current, {
         scrollTrigger: {
           trigger: titleRef.current,
@@ -71,8 +91,7 @@ export const Projects3D = () => {
         scale: 0.9,
       });
 
-      // Project cards reveal
-      cardsRef.current.forEach((card, index) => {
+      cardsRef.current.forEach((card) => {
         if (card) {
           gsap.from(card, {
             scrollTrigger: {
@@ -113,7 +132,7 @@ export const Projects3D = () => {
           Featured Projects
         </h2>
         <p className="text-xl text-muted-foreground text-center mb-20 max-w-3xl mx-auto">
-          Pushing the boundaries of web technology with immersive experiences
+          From custom WordPress solutions to modern React applications - building end-to-end digital experiences
         </p>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -127,7 +146,7 @@ export const Projects3D = () => {
               }}
             >
               {/* 3D Canvas Header */}
-              <div className="h-64 bg-secondary/20 relative overflow-hidden">
+              <div className="h-48 bg-secondary/20 relative overflow-hidden">
                 <Canvas camera={{ position: [0, 0, 3.5] }}>
                   <ambientLight intensity={0.5} />
                   <pointLight position={[5, 5, 5]} intensity={2} color={project.color} />
@@ -137,32 +156,32 @@ export const Projects3D = () => {
               </div>
 
               {/* Content */}
-              <div className="p-8">
-                <h3 className="text-3xl font-bold mb-4 group-hover:text-primary transition-colors">
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-muted-foreground mb-6 leading-relaxed">
+                <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
                   {project.description}
                 </p>
 
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-4">
                   {project.tech.map((tech) => (
                     <span
                       key={tech}
-                      className="px-4 py-2 glass text-sm rounded-full font-medium hover:neon-border transition-all"
+                      className="px-3 py-1 glass text-xs rounded-full font-medium"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
 
-                <div className="flex gap-4">
-                  <button className="flex items-center gap-2 px-6 py-3 glass-card rounded-xl text-primary hover:scale-110 transition-all neon-border">
-                    <Github className="w-5 h-5" />
+                <div className="flex gap-3">
+                  <button className="flex items-center gap-2 px-4 py-2 glass-card rounded-xl text-primary hover:scale-110 transition-all neon-border text-sm">
+                    <Github className="w-4 h-4" />
                     <span>Code</span>
                   </button>
-                  <button className="flex items-center gap-2 px-6 py-3 glass-card rounded-xl text-primary hover:scale-110 transition-all neon-border">
-                    <ExternalLink className="w-5 h-5" />
+                  <button className="flex items-center gap-2 px-4 py-2 glass-card rounded-xl text-primary hover:scale-110 transition-all neon-border text-sm">
+                    <ExternalLink className="w-4 h-4" />
                     <span>Live</span>
                   </button>
                 </div>

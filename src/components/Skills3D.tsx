@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, RoundedBox, Text3D, Center } from "@react-three/drei";
+import { Float, RoundedBox } from "@react-three/drei";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
@@ -26,13 +26,42 @@ const IconBox = ({ position, color, delay }: { position: [number, number, number
   );
 };
 
-const skills = [
-  { name: "React", level: 95, color: "#61DAFB" },
-  { name: "TypeScript", level: 90, color: "#3178C6" },
-  { name: "Node.js", level: 88, color: "#339933" },
-  { name: "Three.js", level: 85, color: "#3ECFEF" },
-  { name: "GSAP", level: 82, color: "#88CE02" },
-  { name: "Next.js", level: 90, color: "#FFFFFF" },
+const skillCategories = [
+  {
+    title: "Frontend",
+    skills: [
+      { name: "React", level: 95, color: "#61DAFB" },
+      { name: "Next.js", level: 90, color: "#FFFFFF" },
+      { name: "JavaScript", level: 95, color: "#F7DF1E" },
+      { name: "HTML/CSS", level: 98, color: "#E34F26" },
+      { name: "jQuery", level: 85, color: "#0769AD" },
+    ],
+  },
+  {
+    title: "Backend",
+    skills: [
+      { name: "Node.js", level: 88, color: "#339933" },
+      { name: "PHP", level: 92, color: "#777BB4" },
+      { name: "MongoDB", level: 85, color: "#47A248" },
+      { name: "MySQL", level: 90, color: "#4479A1" },
+    ],
+  },
+  {
+    title: "WordPress",
+    skills: [
+      { name: "Plugin Dev", level: 95, color: "#21759B" },
+      { name: "Theme Dev", level: 92, color: "#21759B" },
+      { name: "Custom Blocks", level: 90, color: "#21759B" },
+      { name: "API Integration", level: 88, color: "#21759B" },
+    ],
+  },
+  {
+    title: "Tools & DevOps",
+    skills: [
+      { name: "Git", level: 90, color: "#F05032" },
+      { name: "Docker", level: 80, color: "#2496ED" },
+    ],
+  },
 ];
 
 export const Skills3D = () => {
@@ -42,7 +71,6 @@ export const Skills3D = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title animation
       gsap.from(titleRef.current, {
         scrollTrigger: {
           trigger: titleRef.current,
@@ -55,8 +83,7 @@ export const Skills3D = () => {
         scale: 0.8,
       });
 
-      // Cards stagger animation
-      cardsRef.current.forEach((card, index) => {
+      cardsRef.current.forEach((card) => {
         if (card) {
           gsap.from(card, {
             scrollTrigger: {
@@ -73,7 +100,6 @@ export const Skills3D = () => {
         }
       });
 
-      // Parallax effect
       gsap.to(sectionRef.current, {
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -87,6 +113,8 @@ export const Skills3D = () => {
 
     return () => ctx.revert();
   }, []);
+
+  const allSkillsFlat = skillCategories.flatMap((cat) => cat.skills);
 
   return (
     <section
@@ -107,69 +135,75 @@ export const Skills3D = () => {
           <pointLight position={[-10, -10, -10]} intensity={0.8} color="#A855F7" />
           
           <IconBox position={[-4, 3, -2]} color="#61DAFB" delay={0} />
-          <IconBox position={[4, 3, -3]} color="#3178C6" delay={1} />
-          <IconBox position={[-5, -2, -4]} color="#339933" delay={2} />
-          <IconBox position={[5, -2, -2]} color="#3ECFEF" delay={3} />
-          <IconBox position={[0, 4, -5]} color="#88CE02" delay={4} />
-          <IconBox position={[0, -4, -3]} color="#A855F7" delay={5} />
+          <IconBox position={[4, 3, -3]} color="#339933" delay={1} />
+          <IconBox position={[-5, -2, -4]} color="#777BB4" delay={2} />
+          <IconBox position={[5, -2, -2]} color="#21759B" delay={3} />
+          <IconBox position={[0, 4, -5]} color="#F05032" delay={4} />
+          <IconBox position={[0, -4, -3]} color="#47A248" delay={5} />
         </Canvas>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         <h2
           ref={titleRef}
-          className="text-6xl md:text-7xl font-bold text-center mb-20 text-gradient neon-text"
+          className="text-6xl md:text-7xl font-bold text-center mb-8 text-gradient neon-text"
         >
           Tech Arsenal
         </h2>
+        <p className="text-xl text-muted-foreground text-center mb-16 max-w-3xl mx-auto">
+          5+ years of experience building scalable web solutions with modern technologies
+        </p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {skills.map((skill, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {skillCategories.map((category, catIndex) => (
             <div
-              key={skill.name}
-              ref={(el) => (cardsRef.current[index] = el)}
-              className="glass-card p-8 rounded-2xl hover:scale-105 transition-all duration-500 group cursor-pointer"
+              key={category.title}
+              ref={(el) => (cardsRef.current[catIndex] = el)}
+              className="glass-card p-6 rounded-2xl hover:scale-105 transition-all duration-500 group"
               style={{
                 transformStyle: "preserve-3d",
                 transform: "perspective(1000px)",
               }}
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-3xl font-bold group-hover:text-primary transition-colors">
-                  {skill.name}
-                </h3>
-                <div
-                  className="w-16 h-16 rounded-xl neon-border flex items-center justify-center"
-                  style={{ backgroundColor: `${skill.color}20` }}
-                >
-                  <div
-                    className="w-12 h-12 rounded-lg"
-                    style={{ backgroundColor: skill.color }}
-                  />
-                </div>
+              <h3 className="text-2xl font-bold mb-6 text-primary">
+                {category.title}
+              </h3>
+              <div className="space-y-4">
+                {category.skills.map((skill) => (
+                  <div key={skill.name}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-medium">{skill.name}</span>
+                      <span className="text-sm text-primary">{skill.level}%</span>
+                    </div>
+                    <div className="h-2 bg-secondary/50 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-1000 ease-out"
+                        style={{
+                          width: `${skill.level}%`,
+                          background: `linear-gradient(90deg, ${skill.color}, #3ECFEF)`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Proficiency</span>
-                  <span className="text-primary font-bold">{skill.level}%</span>
-                </div>
-                <div className="h-3 bg-secondary/50 rounded-full overflow-hidden backdrop-blur-sm">
-                  <div
-                    className="h-full rounded-full neon-glow transition-all duration-1000 ease-out"
-                    style={{
-                      width: `${skill.level}%`,
-                      background: `linear-gradient(90deg, ${skill.color}, #3ECFEF)`,
-                    }}
-                  />
-                </div>
-              </div>
-
-              <p className="text-sm text-muted-foreground mt-4 group-hover:text-foreground transition-colors">
-                Advanced expertise in modern {skill.name} development
-              </p>
             </div>
           ))}
+        </div>
+
+        {/* Languages */}
+        <div className="mt-16 text-center">
+          <h3 className="text-2xl font-bold mb-6">Languages</h3>
+          <div className="flex justify-center gap-6 flex-wrap">
+            {["English", "Hindi", "Malayalam"].map((lang) => (
+              <span
+                key={lang}
+                className="px-6 py-3 glass-card rounded-full text-primary font-medium hover:scale-110 transition-all neon-border"
+              >
+                {lang}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 

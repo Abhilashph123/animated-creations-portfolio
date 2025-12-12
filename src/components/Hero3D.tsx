@@ -1,60 +1,76 @@
 import { useEffect, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Float, MeshDistortMaterial, Sphere, Torus } from "@react-three/drei";
+import { Float, MeshDistortMaterial, Sphere, Torus, Stars, OrbitControls } from "@react-three/drei";
+import { Mesh, Group } from "three";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import * as THREE from "three";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, MapPin } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const AnimatedGeometry = () => {
-  const sphereRef = useRef<THREE.Mesh>(null);
-  const torusRef = useRef<THREE.Mesh>(null);
+const AnimatedSphere = () => {
+  const meshRef = useRef<Mesh>(null);
 
   useFrame((state) => {
-    if (sphereRef.current && torusRef.current) {
-      sphereRef.current.rotation.x = state.clock.elapsedTime * 0.2;
-      sphereRef.current.rotation.y = state.clock.elapsedTime * 0.3;
-      torusRef.current.rotation.x = state.clock.elapsedTime * 0.15;
-      torusRef.current.rotation.z = state.clock.elapsedTime * 0.25;
+    if (meshRef.current) {
+      meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.3;
     }
   });
 
   return (
-    <>
-      <Float speed={2} rotationIntensity={1.5} floatIntensity={2}>
-        <Sphere ref={sphereRef} args={[1.5, 64, 64]} scale={1.8}>
-          <MeshDistortMaterial
-            color="#3ECFEF"
-            attach="material"
-            distort={0.5}
-            speed={2}
-            roughness={0.1}
-            metalness={0.9}
-          />
-        </Sphere>
-      </Float>
+    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+      <Sphere ref={meshRef} args={[1.5, 100, 100]} position={[0, 0, 0]}>
+        <MeshDistortMaterial
+          color="#00d4ff"
+          attach="material"
+          distort={0.4}
+          speed={2}
+          roughness={0.2}
+          metalness={0.8}
+        />
+      </Sphere>
+    </Float>
+  );
+};
 
-      <Float speed={1.5} rotationIntensity={1} floatIntensity={1.5}>
-        <Torus ref={torusRef} args={[2, 0.3, 32, 100]} position={[0, 0, -1]}>
-          <MeshDistortMaterial
-            color="#A855F7"
-            attach="material"
-            distort={0.3}
-            speed={1.5}
-            roughness={0.2}
-            metalness={0.8}
-            transparent
-            opacity={0.6}
-          />
-        </Torus>
-      </Float>
+const FloatingTorus = () => {
+  const meshRef = useRef<Mesh>(null);
 
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={2} color="#3ECFEF" />
-      <pointLight position={[-10, -10, -5]} intensity={1.5} color="#A855F7" />
-    </>
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x = state.clock.elapsedTime * 0.5;
+      meshRef.current.rotation.z = state.clock.elapsedTime * 0.3;
+    }
+  });
+
+  return (
+    <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
+      <Torus ref={meshRef} args={[2.5, 0.1, 16, 100]} position={[0, 0, -2]}>
+        <meshStandardMaterial color="#a855f7" emissive="#a855f7" emissiveIntensity={0.5} />
+      </Torus>
+    </Float>
+  );
+};
+
+const Scene = () => {
+  const groupRef = useRef<Group>(null);
+
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.1;
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      <ambientLight intensity={0.3} />
+      <directionalLight position={[10, 10, 5]} intensity={1} color="#00d4ff" />
+      <pointLight position={[-10, -10, -5]} intensity={0.5} color="#a855f7" />
+      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+      <AnimatedSphere />
+      <FloatingTorus />
+    </group>
   );
 };
 
@@ -118,6 +134,7 @@ export const Hero3D = () => {
 
   return (
     <section
+      id="home"
       ref={heroRef}
       className="relative h-screen flex items-center justify-center overflow-hidden"
     >
@@ -132,7 +149,7 @@ export const Hero3D = () => {
       {/* 3D Canvas Background */}
       <div className="absolute inset-0 opacity-60">
         <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
-          <AnimatedGeometry />
+          <Scene />
           <OrbitControls
             enableZoom={false}
             enablePan={false}
@@ -144,25 +161,40 @@ export const Hero3D = () => {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <MapPin className="w-5 h-5 text-primary" />
+          <span className="text-muted-foreground">Thrissur, Kerala</span>
+        </div>
         <h1
           ref={titleRef}
-          className="text-7xl md:text-9xl font-bold mb-8 text-gradient neon-text"
+          className="text-5xl md:text-8xl font-bold mb-4 text-gradient neon-text"
         >
-          Software Developer
+          ABHILASH PH
         </h1>
+        <h2 className="text-2xl md:text-4xl font-semibold mb-6 text-primary">
+          Full Stack Web Developer
+        </h2>
         <p
           ref={subtitleRef}
-          className="text-xl md:text-3xl text-muted-foreground mb-12 max-w-3xl mx-auto font-light"
+          className="text-lg md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto font-light"
         >
-          Crafting immersive digital experiences with cutting-edge technology
+          5+ years crafting custom WordPress solutions, React applications & modern web experiences
         </p>
-        <button
-          ref={buttonRef}
-          onClick={scrollToAbout}
-          className="px-10 py-5 glass-card text-primary font-semibold rounded-full hover:scale-110 transition-all neon-border text-lg"
-        >
-          Explore My Universe
-        </button>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            ref={buttonRef}
+            onClick={scrollToAbout}
+            className="px-10 py-5 glass-card text-primary font-semibold rounded-full hover:scale-110 transition-all neon-border text-lg"
+          >
+            Explore My Work
+          </button>
+          <a
+            href="mailto:abhilashph85@gmail.com"
+            className="px-10 py-5 bg-primary text-primary-foreground font-semibold rounded-full hover:scale-110 transition-all text-lg"
+          >
+            Hire Me
+          </a>
+        </div>
       </div>
 
       {/* Scroll Indicator */}
